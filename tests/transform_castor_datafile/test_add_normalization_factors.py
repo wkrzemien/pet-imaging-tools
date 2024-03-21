@@ -7,9 +7,9 @@ from pathlib import Path
 
 import numpy as np
 
-from transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
+from src.transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
 
-from transform_castor_datafile.add_normalization_factors import *  # pylint: disable=unused-wildcard-import
+from src.transform_castor_datafile.add_normalization_factors import *  # pylint: disable=unused-wildcard-import
 
 
 class AddNormalizationFactors(unittest.TestCase):

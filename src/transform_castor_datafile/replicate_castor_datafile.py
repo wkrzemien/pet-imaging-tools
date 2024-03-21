@@ -8,9 +8,9 @@ import logging
 import os
 import sys
 
-from transform_castor_datafile.update_castor_datafile import get_cdf_and_cdh_content_from_file
-from transform_castor_datafile.update_castor_datafile import write_new_cdh_file
-from transform_castor_datafile.update_castor_datafile import write_new_cdf_file
+from src.transform_castor_datafile.update_castor_datafile import get_cdf_and_cdh_content_from_file
+from src.transform_castor_datafile.update_castor_datafile import write_new_cdh_file
+from src.transform_castor_datafile.update_castor_datafile import write_new_cdf_file
 
 
 def replicate_castor_datafile(cdh_path, output_cdh, output_cdf):

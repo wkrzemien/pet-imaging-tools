@@ -12,7 +12,7 @@ import os
 
 import pandas as pd
 
-from transform_castor_datafile.update_castor_datafile import update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
+from src.transform_castor_datafile.update_castor_datafile import update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
 
 
 def add_normalization_factors(cdh_path, nf, output_cdh, output_cdf):
