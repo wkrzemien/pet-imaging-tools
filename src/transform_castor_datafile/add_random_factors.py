@@ -13,7 +13,7 @@ import os
 
 import numpy as np
 
-from transform_castor_datafile.update_castor_datafile import update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
+from src.transform_castor_datafile.update_castor_datafile import update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
 
 
 def get_module_from_hit(x, y):

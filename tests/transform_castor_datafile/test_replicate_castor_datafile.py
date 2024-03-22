@@ -8,9 +8,9 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
+from src.transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
 
-from transform_castor_datafile.replicate_castor_datafile import *  # pylint: disable=unused-wildcard-import
+from src.transform_castor_datafile.replicate_castor_datafile import *  # pylint: disable=unused-wildcard-import
 
 
 class ReplicateCASToRDatafile(unittest.TestCase):

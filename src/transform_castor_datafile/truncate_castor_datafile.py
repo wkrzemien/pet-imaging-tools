@@ -4,7 +4,7 @@ import argparse
 import re
 import logging
 
-from transform_castor_datafile.update_castor_datafile import update_castor_datafile, CASToRCDHKey, StopProcessingException
+from src.transform_castor_datafile.update_castor_datafile import update_castor_datafile, CASToRCDHKey, StopProcessingException
 
 
 def truncate_castor_datafile(cdh_path, n, output_cdh, output_cdf):

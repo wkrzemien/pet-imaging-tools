@@ -11,10 +11,10 @@ import pandas as pd
 
 from tests.helper_tools import download_file
 
-from transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField, read_cdh_field, CASToRCDHKey
+from src.transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField, read_cdh_field, CASToRCDHKey
 
-from transform_castor_datafile.add_normalization_factors import add_normalization_factors
-from transform_castor_datafile.add_random_factors import add_random_factors_jmodular_24m50z
+from src.transform_castor_datafile.add_normalization_factors import add_normalization_factors
+from src.transform_castor_datafile.add_random_factors import add_random_factors_jmodular_24m50z
 
 
 class CorrectionFactorsCommutativity(unittest.TestCase):

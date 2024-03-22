@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from transform_castor_datafile.update_castor_datafile import *  # pylint: disable=unused-wildcard-import
+from src.transform_castor_datafile.update_castor_datafile import *  # pylint: disable=unused-wildcard-import
 
 
 class UpdateCASToRDatafile(unittest.TestCase):

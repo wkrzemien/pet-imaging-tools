@@ -1,0 +1,52 @@
+name: CI tests
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+
+  Check-format:
+    runs-on: self-hosted
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Setup requirements
+      run: pip install -r requirements.txt
+
+    - name: Check formatting and linting
+      run: |
+        make format
+        test $(git ls-files -m| wc -l) -eq 0 || { echo "Please run `make format`"; git diff; false; }
+        make check-compile-python
+        make lint
+
+  Run-tests:
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8']
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Setup requirements
+      run: |
+        pip install -r requirements.txt
+        pip install -r tests/requirements.txt
+
+    - name: Run tests
+      run: make tests
