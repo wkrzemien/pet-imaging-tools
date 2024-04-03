@@ -4,7 +4,7 @@ import re
 import logging
 import argparse
 
-from pet_imaging_tools.castor_datafile.transformation import (
+from pet_imaging_tools.castor_datafile import (
     update_castor_datafile, CASToRCDHKey, StopProcessingException
 )
 

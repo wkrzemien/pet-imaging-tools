@@ -9,7 +9,7 @@ import os
 import sys
 import argparse
 
-from pet_imaging_tools.castor_datafile.transformation import (
+from pet_imaging_tools.castor_datafile import (
     get_cdf_and_cdh_content_from_file, write_new_cdh_file, write_new_cdf_file
 )
 

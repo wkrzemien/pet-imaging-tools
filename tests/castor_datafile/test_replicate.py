@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from pet_imaging_tools.castor_datafile.transformation import write_row, get_flags, get_dtype, CASToRCDFField
+from pet_imaging_tools.castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
 from pet_imaging_tools.castor_datafile.replicate import replicate
 
 

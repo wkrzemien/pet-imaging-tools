@@ -11,7 +11,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from pet_imaging_tools.castor_datafile.transformation import read_cdh_field, get_cdf_path, check_flag, get_dtype, get_flags, is_list_mode, max_nb_of_lines_per_event, replace_cdh_field, update_castor_datafile, write_row, CASToRCDHKey, CASToRCDFField, UINT32_T, FLTNBDATA
+from pet_imaging_tools.castor_datafile import read_cdh_field, get_cdf_path, check_flag, get_dtype, get_flags, is_list_mode, max_nb_of_lines_per_event, replace_cdh_field, update_castor_datafile, write_row, CASToRCDHKey, CASToRCDFField, UINT32_T, FLTNBDATA
 
 
 class UpdateCASToRDatafile(unittest.TestCase):

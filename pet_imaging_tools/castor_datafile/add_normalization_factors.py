@@ -12,7 +12,7 @@ import argparse
 
 import pandas as pd
 
-from pet_imaging_tools.castor_datafile.transformation import (
+from pet_imaging_tools.castor_datafile import (
     update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
 )
 
