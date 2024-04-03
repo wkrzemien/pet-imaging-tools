@@ -4,14 +4,12 @@ import re
 import logging
 import argparse
 
-from src.transform_castor_datafile.update_castor_datafile import (
+from pet_imaging_tools.castor_datafile.transformation import (
     update_castor_datafile, CASToRCDHKey, StopProcessingException
 )
 
 
-def truncate_castor_datafile(
-    cdh_path, number_of_events, output_cdh, output_cdf
-):
+def truncate(cdh_path, number_of_events, output_cdh, output_cdf):
   """Truncate a CASToR datafile.
 
   Args:
@@ -63,7 +61,7 @@ def main():
   """Truncate a CASToR datafile."""
   logging.getLogger().setLevel(logging.INFO)
   args = parse_args()
-  truncate_castor_datafile(args.cdh, args.n, args.output_cdh, args.output_cdf)
+  truncate(args.cdh, args.n, args.output_cdh, args.output_cdf)
 
 
 if __name__ == '__main__':

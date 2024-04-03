@@ -9,12 +9,12 @@ import os
 import sys
 import argparse
 
-from src.transform_castor_datafile.update_castor_datafile import get_cdf_and_cdh_content_from_file
-from src.transform_castor_datafile.update_castor_datafile import write_new_cdh_file
-from src.transform_castor_datafile.update_castor_datafile import write_new_cdf_file
+from pet_imaging_tools.castor_datafile.transformation import (
+    get_cdf_and_cdh_content_from_file, write_new_cdh_file, write_new_cdf_file
+)
 
 
-def replicate_castor_datafile(cdh_path, output_cdh, output_cdf):
+def replicate(cdh_path, output_cdh, output_cdf):
   """Replicates a pair of CASToR header/data file.
 
   Args:
@@ -57,7 +57,7 @@ def main():
 
   args = parse_args()
 
-  replicate_castor_datafile(args.cdh, args.output_cdh, args.output_cdf)
+  replicate(args.cdh, args.output_cdh, args.output_cdf)
 
 
 if __name__ == '__main__':

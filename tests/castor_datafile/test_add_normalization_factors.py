@@ -6,10 +6,10 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
+import pandas as pd
 
-from src.transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
-
-from src.transform_castor_datafile.add_normalization_factors import *  # pylint: disable=unused-wildcard-import
+from pet_imaging_tools.castor_datafile.transformation import write_row, get_flags, get_dtype, CASToRCDHKey, CASToRCDFField, read_cdh_field
+from pet_imaging_tools.castor_datafile.add_normalization_factors import add_normalization_factors
 
 
 class AddNormalizationFactors(unittest.TestCase):

@@ -1,15 +1,17 @@
-"""Tests for update_castor_datafile.py.
+"""Tests for transformation.py.
 """
 
 import tempfile
 import unittest
 import filecmp
+import os
 from unittest import mock
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
-from src.transform_castor_datafile.update_castor_datafile import *  # pylint: disable=unused-wildcard-import
+from pet_imaging_tools.castor_datafile.transformation import read_cdh_field, get_cdf_path, check_flag, get_dtype, get_flags, is_list_mode, max_nb_of_lines_per_event, replace_cdh_field, update_castor_datafile, write_row, CASToRCDHKey, CASToRCDFField, UINT32_T, FLTNBDATA
 
 
 class UpdateCASToRDatafile(unittest.TestCase):
