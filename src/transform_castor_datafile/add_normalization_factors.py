@@ -8,10 +8,10 @@ This script can also serves as a skeleton on how to use update_castor_datafile.p
 
 import logging
 import os
+import argparse
 
 import pandas as pd
 
-from src.transform_castor_datafile.utils import default_parser
 from src.transform_castor_datafile.update_castor_datafile import (
     update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
 )
@@ -59,9 +59,12 @@ def parse_args():
   Returns:
     Parsed command-line arguments.
   """
-  parser = default_parser(
-      "Add normalization factors to a CASToR data file (*.Cdf)."
+  parser = argparse.ArgumentParser(
+      description="Add normalization factors to a CASToR data file (*.Cdf)."
   )
+  parser.add_argument('--cdh', help="CASToR data header", required=True)
+  parser.add_argument('--output-cdf', help="output Cdf file", required=True)
+  parser.add_argument('--output-cdh', help="output Cdh file", required=True)
   parser.add_argument('--nf', help="normalizatiom factors", required=True)
   return parser.parse_args()
 

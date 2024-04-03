@@ -2,8 +2,8 @@
 
 import re
 import logging
+import argparse
 
-from src.transform_castor_datafile.utils import default_parser
 from src.transform_castor_datafile.update_castor_datafile import (
     update_castor_datafile, CASToRCDHKey, StopProcessingException
 )
@@ -49,7 +49,10 @@ def parse_args():
   Returns:
     Parsed command-line arguments.
   """
-  parser = default_parser("Truncate a CASToR datafile.")
+  parser = argparse.ArgumentParser(description="Truncate a CASToR datafile.")
+  parser.add_argument('--cdh', help="CASToR data header", required=True)
+  parser.add_argument('--output-cdf', help="output Cdf file", required=True)
+  parser.add_argument('--output-cdh', help="output Cdh file", required=True)
   parser.add_argument(
       '-n', help="number of rows to keep", type=int, required=True
   )

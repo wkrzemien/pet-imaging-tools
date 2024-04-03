@@ -7,8 +7,7 @@ We operate on list-mode data format.
 import logging
 import os
 import sys
-
-from src.transform_castor_datafile.utils import default_parser
+import argparse
 
 from src.transform_castor_datafile.update_castor_datafile import get_cdf_and_cdh_content_from_file
 from src.transform_castor_datafile.update_castor_datafile import write_new_cdh_file
@@ -41,7 +40,12 @@ def parse_args():
   Returns:
     Parsed command-line arguments.
   """
-  parser = default_parser("Replicate CASToR data file (*.Cdf).")
+  parser = argparse.ArgumentParser(
+      description="Replicate CASToR data file (*.Cdf)."
+  )
+  parser.add_argument('--cdh', help="CASToR data header", required=True)
+  parser.add_argument('--output-cdf', help="output Cdf file", required=True)
+  parser.add_argument('--output-cdh', help="output Cdh file", required=True)
   return parser.parse_args()
 
 
