@@ -29,6 +29,7 @@ import dask.dataframe as dd
 
 
 class CASToRCDHKey(StrEnum):
+  """CASToR CDH keys."""
   DATA_FILENAME = 'Data filename'
   NUMBER_OF_EVENTS = 'Number of events'
   ATTENUATION_CORRECTION_FLAG = 'Attenuation correction flag'
@@ -39,6 +40,7 @@ class CASToRCDHKey(StrEnum):
 
 
 class CASToRCDFField(StrEnum):
+  """CASToR CDF fields."""
   TIMESTAMP = 't'
   ATTENUATION = 'a'
   SCATTER = 's'
@@ -55,6 +57,7 @@ FLTNBDATA = '<f4'
 
 
 class CASToRCDFType(StrEnum):
+  """Types associated to a given CASToR CDF field."""
   TIMESTAMP = UINT32_T
   ATTENUATION = FLTNBDATA
   SCATTER = FLTNBDATA
@@ -94,10 +97,13 @@ FLAGS = {
 }
 
 
-# The following class is used in Cdf-updating callbacks to tell the script that processing should stop.
-# This is useful if no additional rows will be written to the file, for instance when truncating a file.
 class StopProcessingException(Exception):
-  pass
+  """
+  The following class is used in Cdf-updating callbacks to tell the script that processing should
+  stop.
+  This is useful if no additional rows will be written to the file, for instance when truncating a
+  file.
+  """
 
 
 def read_cdh_field(cdh_content, field):
@@ -108,7 +114,8 @@ def read_cdh_field(cdh_content, field):
     field (str): field to read.
 
   Returns:
-    Value of the field, or None if the field is not found. Raises a ValueError is the field is found more than once.
+    Value of the field, or None if the field is not found. Raises a ValueError is the field is
+    found more than once.
   """
   field_matches = re.findall(
       rf'^{field}\s*:\s*(\S+)\s*$', cdh_content, re.MULTILINE
@@ -189,7 +196,8 @@ def get_flags(cdh_content):
 
 
 def max_nb_of_lines_per_event(cdh_content):
-  """Get the maximum number of lines per event as defined in the content of a CASToR data header file.
+  """Get the maximum number of lines per event as defined in the content of a CASToR data header
+  file.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -206,7 +214,8 @@ def max_nb_of_lines_per_event(cdh_content):
 def get_cdf_path(cdh_content, cdh_filename):
   """Get the path of the CASToR data file pointed by the CASToR data header.
 
-  Note: this function assumes that the path of the CASToR data file is given relatively to that of the CASToR header file.
+  Note: this function assumes that the path of the CASToR data file is given relatively to that of
+  the CASToR header file.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -234,8 +243,8 @@ def get_dtype(flags):
   for flag, enabled in flags.items():
     if enabled:
       column = FLAGS[flag]['column']
-      t = FLAGS[flag]['type']
-      dtype_array.append((column, t))
+      flag_type = FLAGS[flag]['type']
+      dtype_array.append((column, flag_type))
 
   dtype_array.append((CASToRCDFField.CRYSTAL_ID_1, CASToRCDFType.CRYSTAL_ID))
   dtype_array.append((CASToRCDFField.CRYSTAL_ID_2, CASToRCDFType.CRYSTAL_ID))
@@ -257,8 +266,8 @@ def write_row(row, output_cdf_file):
   for flag in FLAGS.values():
     column = flag['column']
     if column in row.keys():
-      t = flag['type']
-      output_cdf_file.write(np.dtype(t).type(row[column]))
+      flag_type = flag['type']
+      output_cdf_file.write(np.dtype(flag_type).type(row[column]))
 
   output_cdf_file.write(
       np.dtype(CASToRCDFType.CRYSTAL_ID
@@ -286,7 +295,7 @@ def write_new_cdh_file(
         cdh_content, CASToRCDHKey.DATA_FILENAME, cdf_filename
     )
     output_cdh_file.write(update_cdh(cdh_with_updated_cdf))
-  logging.info(f"Successfully wrote {output_cdh}.")
+  logging.info("Successfully wrote %s.", output_cdh)
 
 
 def write_new_cdf_file(output_cdf, cdf_dd, update_row=lambda row: row):
@@ -308,7 +317,7 @@ def write_new_cdf_file(output_cdf, cdf_dd, update_row=lambda row: row):
     except StopProcessingException:
       pass
 
-  logging.info(f"Successfully wrote {output_cdf}.")
+  logging.info("Successfully wrote %s.", output_cdf)
 
 
 def get_dd_from_cdf_file(cdf_path, cdf_dt, chunksize):
@@ -317,15 +326,15 @@ def get_dd_from_cdf_file(cdf_path, cdf_dt, chunksize):
 
   Args:
     cdf_path (str): the CASToR data file.
-    cdf_dt (numpy.dtype):  numpy data type object describing types of object to be stored in the array
-    chunksize (int): size of chunks used in
-                     the dask.dataframe.from_array() function.
+    cdf_dt (numpy.dtype): numpy data type object describing types of object to be stored in the
+                          array
+    chunksize (int): size of chunks used in the dask.dataframe.from_array() function.
   """
   with open(cdf_path, 'rb') as cdf_file:
     cdf_dd = dd.from_array(
         np.frombuffer(cdf_file.read(), cdf_dt), chunksize=chunksize
     )
-    logging.info(f"Successfully read {cdf_path}.")
+    logging.info("Successfully read %s.", cdf_path)
   return cdf_dd
 
 
@@ -353,7 +362,7 @@ def get_cdf_and_cdh_content_from_file(cdh_path, chunksize=int(1e7)):
 
     cdf_path = get_cdf_path(cdh_content, cdh_path)
 
-    logging.info(f"Successfully read {cdh_path}.")
+    logging.info("Successfully read %s.", cdh_path)
 
     cdf_dd = get_dd_from_cdf_file(cdf_path, cdf_dt, chunksize=chunksize)
   return cdh_content, cdf_dd
@@ -382,5 +391,5 @@ def update_castor_datafile(
     write_new_cdf_file(output_cdf, cdf_dd, update_row)
 
   except FileNotFoundError as file_not_found:
-    logging.error(f"File not found: {file_not_found.filename}.")
+    logging.error("File not found: %s.", file_not_found.filename)
     sys.exit(1)

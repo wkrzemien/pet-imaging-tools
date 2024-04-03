@@ -1,18 +1,22 @@
 """Truncate a CASToR datafile to keep only the first n events."""
 
-import argparse
 import re
 import logging
+import argparse
 
-from src.transform_castor_datafile.update_castor_datafile import update_castor_datafile, CASToRCDHKey, StopProcessingException
+from src.transform_castor_datafile.update_castor_datafile import (
+    update_castor_datafile, CASToRCDHKey, StopProcessingException
+)
 
 
-def truncate_castor_datafile(cdh_path, n, output_cdh, output_cdf):
+def truncate_castor_datafile(
+    cdh_path, number_of_events, output_cdh, output_cdf
+):
   """Truncate a CASToR datafile.
 
   Args:
     cdh_path (str): the CASToR header file.
-    n (int): number of rows to keep.
+    number_of_events (int): number of rows to keep.
     output_cdh (str): output CASToR header file.
     output_cdf (str): output CASToR data file.
   """
@@ -20,7 +24,7 @@ def truncate_castor_datafile(cdh_path, n, output_cdh, output_cdf):
   def update_cdh(old_cdh):
     return re.sub(
         f'^{CASToRCDHKey.NUMBER_OF_EVENTS}:.*$',
-        f'{CASToRCDHKey.NUMBER_OF_EVENTS}: {n}',
+        f'{CASToRCDHKey.NUMBER_OF_EVENTS}: {number_of_events}',
         old_cdh,
         flags=re.MULTILINE
     )
@@ -30,7 +34,7 @@ def truncate_castor_datafile(cdh_path, n, output_cdh, output_cdf):
   def update_row(row):
     nonlocal i
     i = i + 1
-    if i > n:
+    if i > number_of_events:
       raise StopProcessingException
     return row
 
@@ -47,11 +51,11 @@ def parse_args():
   """
   parser = argparse.ArgumentParser(description="Truncate a CASToR datafile.")
   parser.add_argument('--cdh', help="CASToR data header", required=True)
+  parser.add_argument('--output-cdf', help="output Cdf file", required=True)
+  parser.add_argument('--output-cdh', help="output Cdh file", required=True)
   parser.add_argument(
       '-n', help="number of rows to keep", type=int, required=True
   )
-  parser.add_argument('--output-cdf', help="output Cdf file", required=True)
-  parser.add_argument('--output-cdh', help="output Cdh file", required=True)
   return parser.parse_args()
 
 

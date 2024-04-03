@@ -6,27 +6,29 @@ c1,c2,n
 This script can also serves as a skeleton on how to use update_castor_datafile.py.
 """
 
-import argparse
 import logging
 import os
+import argparse
 
 import pandas as pd
 
-from src.transform_castor_datafile.update_castor_datafile import update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
+from src.transform_castor_datafile.update_castor_datafile import (
+    update_castor_datafile, read_cdh_field, CASToRCDHKey, CASToRCDFField
+)
 
 
-def add_normalization_factors(cdh_path, nf, output_cdh, output_cdf):
+def add_normalization_factors(cdh_path, nf_csv, output_cdh, output_cdf):
   """Add normalization factors from a CSV file to a pair of CASToR header/data file.
 
   Args:
     cdh_path (str): the CASToR header file.
-    nf (str): the CSV file that contains normalization factors.
+    nf_csv (str): the CSV file that contains normalization factors.
     output_cdh (str): output CASToR header file.
     output_cdf (str): output CASToR data file.
   """
 
-  nf_df = pd.read_csv(nf, index_col=[0, 1])
-  logging.info(f"Successfully read {nf}.")
+  nf_df = pd.read_csv(nf_csv, index_col=[0, 1])
+  logging.info("Successfully read %s.", nf_csv)
 
   def update_cdh(old_cdh):
     if read_cdh_field(old_cdh,
@@ -39,11 +41,11 @@ def add_normalization_factors(cdh_path, nf, output_cdh, output_cdf):
 
   def update_row(row):
     try:
-      nf = nf_df.loc[row[CASToRCDFField.CRYSTAL_ID_1],
-                     row[CASToRCDFField.CRYSTAL_ID_2]]['n']
+      normalization_factor = nf_df.loc[row[CASToRCDFField.CRYSTAL_ID_1],
+                                       row[CASToRCDFField.CRYSTAL_ID_2]]['n']
     except KeyError:  # the corresponding normalization factor does not exist
-      nf = 1.
-    row[CASToRCDFField.NORMALIZATION] = nf
+      normalization_factor = 1.
+    row[CASToRCDFField.NORMALIZATION] = normalization_factor
     return row
 
   update_castor_datafile(
@@ -61,9 +63,9 @@ def parse_args():
       description="Add normalization factors to a CASToR data file (*.Cdf)."
   )
   parser.add_argument('--cdh', help="CASToR data header", required=True)
-  parser.add_argument('--nf', help="normalizatiom factors", required=True)
   parser.add_argument('--output-cdf', help="output Cdf file", required=True)
   parser.add_argument('--output-cdh', help="output Cdh file", required=True)
+  parser.add_argument('--nf', help="normalizatiom factors", required=True)
   return parser.parse_args()
 
 

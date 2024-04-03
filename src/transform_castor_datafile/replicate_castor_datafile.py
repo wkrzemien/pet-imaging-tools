@@ -1,12 +1,13 @@
-"""Replicate CASToR data file using sampling with repetition on ensemble of rows from the original file (*.Cdf).
-   We operate on list-mode data format.
-
+"""
+Replicate CASToR data file using sampling with repetition on ensemble of rows from the original
+file (*.Cdf).
+We operate on list-mode data format.
 """
 
-import argparse
 import logging
 import os
 import sys
+import argparse
 
 from src.transform_castor_datafile.update_castor_datafile import get_cdf_and_cdh_content_from_file
 from src.transform_castor_datafile.update_castor_datafile import write_new_cdh_file
@@ -29,7 +30,7 @@ def replicate_castor_datafile(cdh_path, output_cdh, output_cdf):
     write_new_cdf_file(output_cdf, replicated_cdf)
 
   except FileNotFoundError as file_not_found:
-    logging.error(f"File not found: {file_not_found.filename}.")
+    logging.error("File not found: %s.", file_not_found.filename)
     sys.exit(1)
 
 
