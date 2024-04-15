@@ -1,4 +1,4 @@
-"""Tests for replicate_castor_datafile.py.
+"""Tests for replicate.py.
 """
 
 import unittest
@@ -8,14 +8,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
-
-from src.transform_castor_datafile.replicate_castor_datafile import *  # pylint: disable=unused-wildcard-import
+from pet_imaging_tools.castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField
+from pet_imaging_tools.castor_datafile.replicate import replicate
 
 
 class ReplicateCASToRDatafile(unittest.TestCase):
 
-  def test_replicate_castor_datafile(self):
+  def test_replicate(self):
 
     with tempfile.TemporaryDirectory() as tmp_dir:
 
@@ -49,7 +48,7 @@ Isotope: unknown'''
       output_cdh = Path(tmp_dir) / 'output.Cdh'
       output_cdf = Path(tmp_dir) / 'output.Cdf'
 
-      replicate_castor_datafile(input_cdh, output_cdh, output_cdf)
+      replicate(input_cdh, output_cdh, output_cdf)
 
       with open(output_cdh, 'r+', encoding='utf-8') as cdh_file:
 
@@ -71,8 +70,7 @@ Isotope: unknown'''
       output_cdf = Path(tmp_dir) / 'output_nonexistent.Cdf'
 
       self.assertRaises(
-          SystemExit, replicate_castor_datafile, input_cdh, output_cdh,
-          output_cdf
+          SystemExit, replicate, input_cdh, output_cdh, output_cdf
       )
 
 

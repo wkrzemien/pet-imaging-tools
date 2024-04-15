@@ -1,4 +1,4 @@
-"""Tests for truncate_castor_datafile.py.
+"""Tests for truncate.py.
 """
 
 import unittest
@@ -8,14 +8,13 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from src.transform_castor_datafile.update_castor_datafile import write_row, get_flags, get_dtype, CASToRCDFField, read_cdh_field
-
-from src.transform_castor_datafile.truncate_castor_datafile import *  # pylint: disable=unused-wildcard-import
+from pet_imaging_tools.castor_datafile import write_row, get_flags, get_dtype, CASToRCDHKey, CASToRCDFField, read_cdh_field
+from pet_imaging_tools.castor_datafile.truncate import truncate
 
 
 class TruncateCASTORDatafile(unittest.TestCase):
 
-  def test_truncate_castor_datafile(self):
+  def test_truncate(self):
 
     with tempfile.TemporaryDirectory() as tmp_dir:
 
@@ -50,9 +49,7 @@ Isotope: unknown'''
       output_cdf = Path(tmp_dir) / 'output.Cdf'
       output_number_of_event = 10
 
-      truncate_castor_datafile(
-          input_cdh, output_number_of_event, output_cdh, output_cdf
-      )
+      truncate(input_cdh, output_number_of_event, output_cdh, output_cdf)
 
       with open(output_cdh, 'r+', encoding='utf-8') as cdh_file:
         cdh_content = cdh_file.read()

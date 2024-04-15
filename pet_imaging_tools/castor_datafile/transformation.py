@@ -1,4 +1,4 @@
-"""Update CASToR datafiles (*.Cdh and *.Cdf) using callbacks.
+"""Transform CASToR datafiles (*.Cdh and *.Cdf).
 
 So far only PET list-mode data is supported.
 
