@@ -5,3 +5,6 @@ pylint==2.12.2
 
 pytest
 -r tests/requirements.txt
+
+mkdocs
+mkdocstrings[python]
