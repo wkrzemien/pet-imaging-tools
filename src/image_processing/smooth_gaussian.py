@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''
 Script to smooth the image with Gaussian filter.
 As an input interfile header and smoothing filter are given.
