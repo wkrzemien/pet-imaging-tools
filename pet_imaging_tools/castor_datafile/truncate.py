@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Truncate a CASToR datafile to keep only the first n events."""
 
 import re
