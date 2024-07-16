@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Convert an analytical function to an image file."""
 
 import argparse
