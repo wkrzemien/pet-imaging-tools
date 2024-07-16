@@ -12,3 +12,9 @@ Former group members: [Kamil Rakoczy](https://github.com/kamilrakoczy), [Paweł 
 ## Credit
 --
 This work was partially funded by EuroHPC PL Project, Smart Growth Operational Programme 4.2
+
+## Install 
+
+pip install git+ssh://git@github.com/JPETTomography/pet-imaging-tools@develop
+pip install git+https://github.com/JPETTomography/pet-imaging-tools@develop
+
