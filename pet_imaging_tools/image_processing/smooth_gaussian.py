@@ -15,7 +15,7 @@ from tempfile import mkstemp
 
 import numpy as np
 from scipy.ndimage import gaussian_filter
-from image_tools.image_tools import get_info_from_interfile_header
+from pet_imaging_tools.image_processing.image_tools import get_info_from_interfile_header
 
 logger = logging.getLogger(__name__)
 
