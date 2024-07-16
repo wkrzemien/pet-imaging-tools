@@ -11,3 +11,13 @@ The focus is put on ease of installation and ease of use for research purposes, 
 ## Authors
 
 `pet-imaging-tools` are being currently developed by [Wojciech Krzemien](https://github.com/wkrzemien) and [Aurélien Coussat](https://github.com/acoussat).
+
+## Credit
+--
+This work was partially funded by EuroHPC PL Project, Smart Growth Operational Programme 4.2
+
+## Install 
+
+pip install git+ssh://git@github.com/JPETTomography/pet-imaging-tools@develop
+pip install git+https://github.com/JPETTomography/pet-imaging-tools@develop
+
