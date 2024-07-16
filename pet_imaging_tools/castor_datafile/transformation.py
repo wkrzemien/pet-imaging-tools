@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Transform CASToR datafiles (*.Cdh and *.Cdf).
 
 So far only PET list-mode data is supported.
