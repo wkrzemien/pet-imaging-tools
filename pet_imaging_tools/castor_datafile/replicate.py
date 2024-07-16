@@ -1,5 +1,5 @@
-"""
-Replicate CASToR data file using sampling with repetition on ensemble of rows from the original
+#!/usr/bin/env python3
+"""Replicate CASToR data file using sampling with repetition on ensemble of rows from the original
 file (*.Cdf).
 We operate on list-mode data format.
 """

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Add pre-computed normalization factors to a CASToR data file (*.Cdf).
 
 Normalization factors are assumed to be in the form of a CSV file with following header:
