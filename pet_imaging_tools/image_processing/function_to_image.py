@@ -7,7 +7,7 @@ import os
 from tqdm import tqdm
 import numpy as np
 
-from function_to_image.functions.fov_sensitivity import fov_sensitivity
+from pet_imaging_tools.image_processing.functions.fov_sensitivity import fov_sensitivity
 
 # Default values for Modular
 VOXEL_SIZE = (2.5, 2.5, 2.5)
