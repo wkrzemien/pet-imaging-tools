@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Replicate CASToR data file using sampling with repetition on ensemble of rows from the original
-file (*.Cdf).
-We operate on list-mode data format.
+"""
+Replicate CASToR data file using sampling with repetition on ensemble of rows from the original
+file. We operate on list-mode data format.
+
+The original file remains untouched, and a new CASToR datafile is created with content sampled
+from the original datafile.
 """
 
 import logging
@@ -15,7 +18,8 @@ from pet_imaging_tools.castor_datafile import (
 
 
 def replicate(cdh_path, output_cdh, output_cdf):
-  """Replicates a pair of CASToR header/data file.
+  """
+  Replicates a pair of CASToR header/data files.
 
   Args:
     cdh_path (str): the CASToR header file.
@@ -35,7 +39,8 @@ def replicate(cdh_path, output_cdh, output_cdf):
 
 
 def parse_args():
-  """Parse command-line arguments.
+  """
+  Parse command-line arguments for replicate function.
 
   Returns:
     Parsed command-line arguments.
@@ -50,7 +55,8 @@ def parse_args():
 
 
 def main():
-  """Replicate CASToR data file (*.Cdf) using the sampling with repetition.
+  """
+  Replicate a CASToR datafile using sampling with repetition.
   """
 
   logging.getLogger().setLevel(logging.INFO)

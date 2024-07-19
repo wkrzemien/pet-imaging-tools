@@ -1,10 +1,25 @@
 #!/usr/bin/env python3
-"""Add pre-computed normalization factors to a CASToR data file (*.Cdf).
+"""
+Add pre-computed normalization factors to a CASToR data file (*.Cdf).
 
-Normalization factors are assumed to be in the form of a CSV file with following header:
+Normalization factors are input in the form of a CSV file with following header:
 c1,c2,n
+where c1 and c2 are the crystal IDs, and n is the corresponding normalization factor.
 
-This script can also serves as a skeleton on how to use update_castor_datafile.py.
+For instance, the following file:
+c1,c2,n
+1,2,0.5
+2,3,1.5
+means that the LOR between crystal 1 and crystal 2 will receive a normalization factor of 0.5,
+and that the LOR between crystal 2 and crystal 3 will receive a normalization factor of 1.5.
+
+LORs absent from the CSV file will receive a default value of 1.
+
+The CASToR header will also be updated. If the input file already contains normalization data, an
+error will be raised and no transformation will be carried out.
+
+The script is non-destructive, meaning that it creates a copy of the input CASToR datafile instead
+of operating in-place. Thus, it should not destroy the original datafile.
 """
 
 import logging
@@ -19,7 +34,8 @@ from pet_imaging_tools.castor_datafile import (
 
 
 def add_normalization_factors(cdh_path, nf_csv, output_cdh, output_cdf):
-  """Add normalization factors from a CSV file to a pair of CASToR header/data file.
+  """
+  Add normalization factors from a CSV file to a pair of CASToR header/data file.
 
   Args:
     cdh_path (str): the CASToR header file.
@@ -55,7 +71,8 @@ def add_normalization_factors(cdh_path, nf_csv, output_cdh, output_cdf):
 
 
 def parse_args():
-  """Parse command-line arguments.
+  """
+  Parse command-line arguments for add_normalization_factors function.
 
   Returns:
     Parsed command-line arguments.
@@ -71,7 +88,8 @@ def parse_args():
 
 
 def main():
-  """Add normalization factors to a CASToR data file (*.Cdf).
+  """
+  Add normalization factors to a CASToR datafile.
   """
 
   logging.getLogger().setLevel(logging.INFO)
