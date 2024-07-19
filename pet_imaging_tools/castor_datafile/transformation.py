@@ -118,7 +118,7 @@ def read_cdh_field(cdh_content, field):
     found more than once.
   """
   field_matches = re.findall(
-      rf'^{field}\s*:\s*(\S+)\s*$', cdh_content, re.MULTILINE
+      rf'^\s*{field}\s*:\s*(\S+)\s*$', cdh_content, re.MULTILINE
   )
   number_of_matches = len(field_matches)
 
