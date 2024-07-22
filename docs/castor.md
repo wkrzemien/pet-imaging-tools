@@ -26,5 +26,5 @@ By default, CASToR is not distributed with any tools that allows to easily manip
 - means of updating data columns
 - means of editing the header in a way which is reflected in the datafile.
 
-The module `pet_imaging_tools.castor_datafile` aims at providing a toolbox to perform basic operations on those datafiles. This module was designed with datafiles for CASToR 3.1.1 in mind. Only PET list-mode data is currently implemented, but the code can be extended to accomodate for other kinds of data, such as histogram, SPECT or CT datafiles.
+The module `pet_imaging_tools.castor_datafile` aims at providing a toolbox to perform basic operations on those datafiles. This module was designed with datafiles for CASToR 3.1.1 in mind. Only PET list-mode data is currently implemented, but the code can be extended to accommodate for other kinds of data, such as histogram, SPECT or CT datafiles.
 Please refer to [the reference](reference.md#pet_imaging_tools.castor_datafile) for additional details about this module.

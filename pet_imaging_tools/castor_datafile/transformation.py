@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Collection of basic building blocks to interact with and edit CASToR datafiles (*.Cdh and *.Cdf). The higher-level tools are built from this set of basic operations.
+Collection of basic building blocks to interact with and edit CASToR datafiles (*.Cdh and *.Cdf).
+The higher-level tools are built from this set of basic operations.
 
 So far only PET list-mode data is supported.
 Additionally, only datafiles with a maximum number of lines per event equal to 1 are supported.
