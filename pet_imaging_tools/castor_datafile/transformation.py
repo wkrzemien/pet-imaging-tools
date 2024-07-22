@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Collection of functions to interact with and transform CASToR datafiles (*.Cdh and *.Cdf).
+Collection of basic building blocks to interact with and edit CASToR datafiles (*.Cdh and *.Cdf). The higher-level tools are built from this set of basic operations.
 
 So far only PET list-mode data is supported.
 Additionally, only datafiles with a maximum number of lines per event equal to 1 are supported.
@@ -171,8 +171,6 @@ def is_list_mode(cdh_content):
   """
   Check if a CASToR data header file represents list-mode data.
 
-  This is useful as only list-mode data is currenltly supported.
-
   Args:
     cdh_content (str): content of the CASToR data header file.
 
@@ -265,7 +263,7 @@ def get_cdf_path(cdh_content, cdh_filename):
 
 def get_dtype(flags):
   """
-  Get data types corresponding to a dictionnary of flags.
+  Get data types corresponding to a dictionary of flags.
 
   Args:
     flags (dict): dictionnary that maps each flag to a boolean.
@@ -319,7 +317,7 @@ def write_new_cdh_file(
     output_cdh, cdf_filename, cdh_content, update_cdh=lambda cdh: cdh
 ):
   """
-  Write new CASToR header file.
+  Write a new CASToR header file.
 
   Args:
     output_cdh (str): output CASToR header file.

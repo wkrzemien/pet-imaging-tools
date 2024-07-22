@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """
 Add pre-computed normalization factors to a CASToR data file (*.Cdf).
-
+Normalization factors are input in the form of a CSV file with the following header:
 Normalization factors are input in the form of a CSV file with following header:
 c1,c2,n
 where c1 and c2 are the crystal IDs, and n is the corresponding normalization factor.
-
+For instance, after the application of the following file:
 For instance, the following file:
 c1,c2,n
 1,2,0.5
-2,3,1.5
-means that the LOR between crystal 1 and crystal 2 will receive a normalization factor of 0.5,
+a normalization factor corresponding to the LOR between crystal 1 and crystal 2 will be set to 0.5,
+and that a normalization factor for the  LOR between crystal 2 and crystal 3 will be set to 1.5.
 and that the LOR between crystal 2 and crystal 3 will receive a normalization factor of 1.5.
 
 LORs absent from the CSV file will receive a default value of 1.

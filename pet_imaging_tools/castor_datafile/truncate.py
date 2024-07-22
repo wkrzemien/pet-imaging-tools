@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Truncate a CASToR datafile to keep only the first events.
+Truncate a CASToR datafile to keep only the first events. This tool does not assume any ordering in the CASToR datafile: the first events will be kept, in the order in which they appear in the binary datafile, and the rest will be discarded.
 
 This is useful for instance to reduce the size of a datafile to check if an operation correctly
 terminates, before running the actual long computation.

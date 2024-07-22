@@ -2,7 +2,7 @@
 """
 Replicate CASToR data file using sampling with repetition on ensemble of rows from the original
 file. We operate on list-mode data format.
-
+The original file remains unchanged and a new CASToR datafile is created with content sampled
 The original file remains untouched, and a new CASToR datafile is created with content sampled
 from the original datafile.
 """
