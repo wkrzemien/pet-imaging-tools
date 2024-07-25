@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Truncate a CASToR datafile to keep only the first n events."""
+"""
+Truncate a CASToR datafile to keep only the first events. This tool does not assume any ordering in
+the CASToR datafile: the first events will be kept, in the order in which they appear in the binary
+datafile, and the rest will be discarded.
+
+This is useful for instance to reduce the size of a datafile to check if an operation correctly
+terminates, before running the actual long computation.
+"""
 
 import re
 import logging
@@ -11,7 +18,8 @@ from pet_imaging_tools.castor_datafile import (
 
 
 def truncate(cdh_path, number_of_events, output_cdh, output_cdf):
-  """Truncate a CASToR datafile.
+  """
+  Truncate a CASToR datafile, keeping only the first events.
 
   Args:
     cdh_path (str): the CASToR header file.
@@ -43,7 +51,8 @@ def truncate(cdh_path, number_of_events, output_cdh, output_cdf):
 
 
 def parse_args():
-  """Parse command-line arguments.
+  """
+  Parse command-line arguments for truncate function.
 
   Returns:
     Parsed command-line arguments.
@@ -59,7 +68,9 @@ def parse_args():
 
 
 def main():
-  """Truncate a CASToR datafile."""
+  """
+  Truncate a CASToR datafile by keeping only the first events.
+  """
   logging.getLogger().setLevel(logging.INFO)
   args = parse_args()
   truncate(args.cdh, args.n, args.output_cdh, args.output_cdf)

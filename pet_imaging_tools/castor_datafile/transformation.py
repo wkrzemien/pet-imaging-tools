@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
-"""Transform CASToR datafiles (*.Cdh and *.Cdf).
+"""
+Collection of basic building blocks to interact with and edit CASToR datafiles (*.Cdh and *.Cdf).
+The higher-level tools are built from this set of basic operations.
 
 So far only PET list-mode data is supported.
+Additionally, only datafiles with a maximum number of lines per event equal to 1 are supported.
 
-(Simplified) PET list-mode format
-  Symbol  Description Type  Mandatory
-1 t Time in ms  uint32_t  yes
-2 a Attenuation correction factor FLTNBDATA no
-3 s Un-normalized scatter intensity rate  FLTNBDATA no
-4 r Un-normalized random intensity rate FLTNBDATA no
-5 n Normalization factor of the corresponding event FLTNBDATA no
-6 TOF Difference in arrival time between c1 and c2  FLTNBDATA no
-7 k Number of contributing crystal pairs  uint16_t  no
-8.1 c1  Crystal ID 1  uint32_t  yes
-8.2 c2  Crystal ID 2  unint32_t yes
-(source: https://castor-project.org/sites/default/files/2020-09/CASToR_general_documentation.pdf)
+The CASToR PET list-mode binary format is defined as follow:
+    Symbol  Description Type  Mandatory
+  1 t Time in ms  uint32_t  yes
+  2 a Attenuation correction factor FLTNBDATA no
+  3 s Un-normalized scatter intensity rate  FLTNBDATA no
+  4 r Un-normalized random intensity rate FLTNBDATA no
+  5 n Normalization factor of the corresponding event FLTNBDATA no
+  6 TOF Difference in arrival time between c1 and c2  FLTNBDATA no
+  7 k Number of contributing crystal pairs  uint16_t  no
+  8.1 c1  Crystal ID 1  uint32_t  yes
+  8.2 c2  Crystal ID 2  unint32_t yes
+
+Additional information about the CASToR datafile format can be found in CASToR official
+documentation:
+  https://castor-project.org/sites/default/files/2020-09/CASToR_general_documentation.pdf
 """
 
 import re
@@ -30,7 +36,9 @@ import dask.dataframe as dd
 
 
 class CASToRCDHKey(StrEnum):
-  """CASToR CDH keys."""
+  """
+  List of keys that can be found in CASToR header files (*.Cdh).
+  """
   DATA_FILENAME = 'Data filename'
   NUMBER_OF_EVENTS = 'Number of events'
   ATTENUATION_CORRECTION_FLAG = 'Attenuation correction flag'
@@ -41,7 +49,15 @@ class CASToRCDHKey(StrEnum):
 
 
 class CASToRCDFField(StrEnum):
-  """CASToR CDF fields."""
+  """
+  List of fields that are found in CASToR binary files (*.Cdf).
+
+  The symbolic value associated with each fields corresponds to the key used in CASToR official
+  documentation.
+
+  This symbolic value is also used internally as column names during manipulations of the binary
+  datafile.
+  """
   TIMESTAMP = 't'
   ATTENUATION = 'a'
   SCATTER = 's'
@@ -58,7 +74,9 @@ FLTNBDATA = '<f4'
 
 
 class CASToRCDFType(StrEnum):
-  """Types associated to a given CASToR CDF field."""
+  """
+  Mapping between fields found in the CASToR binary file (*.Cdf), and the datatype of said fields.
+  """
   TIMESTAMP = UINT32_T
   ATTENUATION = FLTNBDATA
   SCATTER = FLTNBDATA
@@ -102,13 +120,14 @@ class StopProcessingException(Exception):
   """
   The following class is used in Cdf-updating callbacks to tell the script that processing should
   stop.
-  This is useful if no additional rows will be written to the file, for instance when truncating a
-  file.
+  This is useful if no additional rows will be written to the file, for instance when truncating
+  a file.
   """
 
 
 def read_cdh_field(cdh_content, field):
-  """Read a field from a CASToR data header file.
+  """
+  Read a field from a CASToR data header file.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -133,12 +152,16 @@ def read_cdh_field(cdh_content, field):
 
 
 def replace_cdh_field(cdh_content, field, new_value):
-  """Replace a field in a CASToR data header file. If the field is not found, nothing happens.
+  """
+  Replace a field in a CASToR data header file. If the field is not found, nothing happens.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
     field (str): field whose content to replace.
     new_value (str): new value for the field.
+
+  Returns:
+    The content of the header file with field updated with the new value.
   """
   return re.sub(
       f'^{field}.+$', f'{field}: {new_value}', cdh_content, flags=re.MULTILINE
@@ -146,7 +169,8 @@ def replace_cdh_field(cdh_content, field, new_value):
 
 
 def is_list_mode(cdh_content):
-  """Check if a CASToR data header file represents list-mode data.
+  """
+  Check if a CASToR data header file represents list-mode data.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -163,7 +187,11 @@ def is_list_mode(cdh_content):
 
 
 def check_flag(cdh_content, flag):
-  """Check if some flag was set in a CASToR data header file.
+  """
+  Check if some flag was set in a CASToR data header file.
+
+  Flags are a special kind of field in a CASToR header file, typically indicating whether a given
+  field is present in the binary file. They typically only accept values 1 (on) or 0 (off).
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -179,7 +207,8 @@ def check_flag(cdh_content, flag):
 
 
 def get_flags(cdh_content):
-  """Get flags from a CASToR data header file.
+  """
+  Get flags from a CASToR data header file.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -197,8 +226,10 @@ def get_flags(cdh_content):
 
 
 def max_nb_of_lines_per_event(cdh_content):
-  """Get the maximum number of lines per event as defined in the content of a CASToR data header
-  file.
+  """
+  Get the maximum number of lines per event as defined in the content of a CASToR data header file.
+
+  This is useful as only maximum number of lines per event equal to 1 is supported.
 
   Args:
     cdh_content (str): content of the CASToR data header file.
@@ -213,7 +244,8 @@ def max_nb_of_lines_per_event(cdh_content):
 
 
 def get_cdf_path(cdh_content, cdh_filename):
-  """Get the path of the CASToR data file pointed by the CASToR data header.
+  """
+  Get the path of the CASToR data file pointed by the CASToR data header.
 
   Note: this function assumes that the path of the CASToR data file is given relatively to that of
   the CASToR header file.
@@ -231,7 +263,8 @@ def get_cdf_path(cdh_content, cdh_filename):
 
 
 def get_dtype(flags):
-  """Get data types corresponding to a dictionnary of flags.
+  """
+  Get data types corresponding to a dictionary of flags.
 
   Args:
     flags (dict): dictionnary that maps each flag to a boolean.
@@ -254,7 +287,8 @@ def get_dtype(flags):
 
 
 def write_row(row, output_cdf_file):
-  """Write a row to a Cdf file.
+  """
+  Write a row to a CASToR binary (*.Cdf) file.
 
   Args:
     row (dict): the row to write.
@@ -283,7 +317,8 @@ def write_row(row, output_cdf_file):
 def write_new_cdh_file(
     output_cdh, cdf_filename, cdh_content, update_cdh=lambda cdh: cdh
 ):
-  """Write new CASToR header file.
+  """
+  Write a new CASToR header file.
 
   Args:
     output_cdh (str): output CASToR header file.
@@ -300,7 +335,8 @@ def write_new_cdh_file(
 
 
 def write_new_cdf_file(output_cdf, cdf_dd, update_row=lambda row: row):
-  """Write new CASToR header file.
+  """
+  Write new CASToR header file.
 
   Args:
     output_cdf (str): output CASToR data file.
@@ -322,14 +358,17 @@ def write_new_cdf_file(output_cdf, cdf_dd, update_row=lambda row: row):
 
 
 def get_dd_from_cdf_file(cdf_path, cdf_dt, chunksize):
-  """Reads a content (image) of the CASToR data file and
-     transform it into a dask array.
+  """
+  Reads a content (image) of the CASToR data file and transform it into a dask dataframe.
 
   Args:
     cdf_path (str): the CASToR data file.
     cdf_dt (numpy.dtype): numpy data type object describing types of object to be stored in the
                           array
     chunksize (int): size of chunks used in the dask.dataframe.from_array() function.
+
+  Returns:
+    A dask dataframe representing the content of the binary CASToR datafile.
   """
   with open(cdf_path, 'rb') as cdf_file:
     cdf_dd = dd.from_array(
@@ -340,14 +379,19 @@ def get_dd_from_cdf_file(cdf_path, cdf_dt, chunksize):
 
 
 def get_cdf_and_cdh_content_from_file(cdh_path, chunksize=int(1e7)):
-  """Returns the content of the CASToR header file
-     and the CASTOR datafile. The CASTOR datafile
-     is given in dask.dataframe format
+  """
+  Returns the content of the CASToR header file and the CASTOR datafile. The CASTOR datafile is
+  given in dask.dataframe format.
 
   Args:
     cdh_path (str): the CASToR header file.
     chunksize (int): size of chunks used in
                      the dask.dataframe.from_array() function.
+
+  Returns:
+    A pair of two elements:
+      1. the content of the header
+      2. a dataframe representing the content of the binary datafile
   """
   with open(cdh_path, 'r+', encoding='utf-8') as cdh_file:
     cdh_content = cdh_file.read()
@@ -376,7 +420,14 @@ def update_castor_datafile(
     update_cdh=lambda cdh: cdh,
     update_row=lambda row: row,
 ):
-  """Update a pair of CASToR header/data file.
+  """
+  Update a pair of CASToR header/data file.
+
+  This function is designed to be the entry point of command-line tools, and is designed to be as
+  little restrictive as possible on the set of operations that can be performed on the datafile.
+
+  It takes two callback functions, one that transforms the header, and the other that transforms
+  one row of the datafile (which will be applied once per row).
 
   Args:
     cdh_path (str): the CASToR header file.

@@ -31,7 +31,7 @@ Isotope: unknown"""
 
 def test_read_cdh_field():
   """
-  Test if fields in header datafile are properly read.
+  Tests of reading of header files.
   """
 
   # Normal example
@@ -59,7 +59,7 @@ Calibration factor: 2""", "Calibration factor"
 
 def test_replace_cdh_field():
   """
-  Test if replacing field in header is properly handled.
+ Tests of updating header fields.
   """
 
   # Normal example
