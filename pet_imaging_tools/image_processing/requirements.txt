@@ -1,2 +1,4 @@
 tdqm
 scipy
+matplotlib
+numpy
