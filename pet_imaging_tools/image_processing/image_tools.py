@@ -191,4 +191,3 @@ def transform_interfile_header(input_header, output_header, transform_list):
           break
       else:
         output_file.write(line)
-
