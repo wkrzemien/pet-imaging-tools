@@ -2,6 +2,7 @@ yapf
 pylint==2.12.2
 
 -r pet_imaging_tools/castor_datafile/requirements.txt
+-r pet_imaging_tools/image_processing/requirements.txt
 
 pytest
 -r tests/requirements.txt
