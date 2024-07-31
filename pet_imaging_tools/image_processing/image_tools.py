@@ -3,17 +3,12 @@
   The calculations of fwhm are done according to NEMA standard, using linear approximation and using Gaussian fit, respectively.
 """
 
-import argparse
 import logging
 import os
-import sys
 import lzma
 
-from math import floor
-from scipy.optimize import curve_fit
-
 import numpy as np
-import matplotlib.pyplot as plt
+
 import gatetools as gt
 
 LOGGER = logging.getLogger(__name__)
