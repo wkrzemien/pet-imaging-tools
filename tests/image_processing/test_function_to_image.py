@@ -7,7 +7,7 @@ import sys
 import tempfile
 import numpy as np
 
-from function_to_image.function_to_image import function_to_image
+from pet_imaging_tools.image_processing.function_to_image import function_to_image
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 

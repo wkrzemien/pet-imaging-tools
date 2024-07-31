@@ -4,7 +4,7 @@ import unittest
 import os
 import sys
 from tests.helper_tools import download_file
-from src.image_processing.smooth_gaussian import smooth_gaussian
+from pet_imaging_tools.image_processing.smooth_gaussian import smooth_gaussian
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
