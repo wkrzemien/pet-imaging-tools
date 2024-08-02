@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
-""" Several methods to load an image and generate some X,Y,Z and XY, XZ, YZ profiles and estimate Full Width Half Maximum of the peak.
-  The calculations of fwhm are done according to NEMA standard, using linear approximation and using Gaussian fit, respectively.
+""" 
+ Helper functions to retrive informations from interfile files. 
+ Interfile is a file format developed for data in Nuclear Medicine which allows storing the medical image and the connected metadata.
+ There are two basic variants of Interfile. One variant has separate header (.hdr) and image (.img) files.
+ Todd-Pokropek A, Cradduck TD, Deconinck F, A file format for the exchange of nuclear medicine image data: a specification of Interfile version 3.3, Nucl Med Commun. 1992 Sep;13(9):673-99). We operate with the subformat for which 
+
 """
 
 import logging
@@ -180,9 +184,9 @@ def transform_interfile_header(input_header, output_header, transform_list):
     for line in input_header_lines:
       splitted = line.split(' := ')
       splitted[0] = " ".join(splitted[0].split())
-      for t in transform_list:
-        if t[0] in splitted[0]:
-          output_file.write(f'{t[0]} := {t[1]}' + os.linesep)
+      for tr in transform_list:
+        if tr[0] in splitted[0]:
+          output_file.write(f'{tr[0]} := {tr[1]}' + os.linesep)
           break
       else:
         output_file.write(line)
