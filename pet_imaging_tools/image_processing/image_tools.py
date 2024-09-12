@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-""" 
- Helper functions to retrive informations from interfile files. 
- Interfile is a file format developed for data in Nuclear Medicine which allows storing the medical image and the connected metadata.
- There are two basic variants of Interfile. One variant has separate header (.hdr) and image (.img) files.
- Todd-Pokropek A, Cradduck TD, Deconinck F, A file format for the exchange of nuclear medicine image data: a specification of Interfile version 3.3, Nucl Med Commun. 1992 Sep;13(9):673-99). We operate with the subformat for which 
+"""
+Helper functions to retrive informations from interfile files.
+Interfile is a file format developed for data in Nuclear Medicine which allows storing the medical
+image and the connected metadata.
+There are two basic variants of Interfile. One variant has separate header (.hdr) and image (.img)
+files.
 
+Todd-Pokropek A, Cradduck TD, Deconinck F, A file format for the exchange of nuclear medicine image
+data: a specification of Interfile version 3.3, Nucl Med Commun. 1992 Sep;13(9):673-99).
 """
 
 import logging
@@ -82,15 +85,21 @@ def load_image_and_metadata(
   Args:
     header_file (str): Name of the input  header file in the interfile format,
                        alternatively compressed with lzma.
-    las_convention (bool): If set to true try to load the image in the radiological LAS convention (Left Anterior Superior).
-                           Uses C matrix ordering convention and flips the image. Default is set to false.
-    return_dicom_properties If set to True return tuple (image_matrix, dicom_properties)
-                            where dicom propertis is a tuple (matrix_size, voxel_size, dicom_origin)
-                            if set to False (default option) return tuple (image_matrix, voxel_size, matrix_size)
+    las_convention (bool): If set to true try to load the image in the radiological LAS
+                           convention (Left Anterior Superior).
+                           Uses C matrix ordering convention and flips the image.
+                           Default is set to false.
+    return_dicom_properties (bool): If set to True return tuple (image_matrix, dicom_properties)
+                                    where dicom propertis is a tuple
+                                    (matrix_size, voxel_size, dicom_origin).
+                                    If set to False (default option) return tuple
+                                    (image_matrix, voxel_size, matrix_size).
 
   Returns:
-    tuple: image_matrix (numpy.array), voxel_size(list), matrix_size (list)   if return_dicom_properties = False
-    tuple  image_matrix (numpy.array), dicom_properties (touple)              if return_dicom_properties = True
+    tuple: image_matrix (numpy.array), voxel_size (list), matrix_size (list)
+           if return_dicom_properties = False
+    tuple: image_matrix (numpy.array), dicom_properties (tuple)
+           if return_dicom_properties = True
 
 
     with the following meaning:
@@ -102,8 +111,10 @@ def load_image_and_metadata(
 
 
   Examples:
-    returned values: numpy.array, [2.4, 2.4, 2.4], [220, 220, 280]    if return_dicom_properties = False
-    returned values: numpy.array, ([220, 220, 280], [2.4, 2.4, 2.4], [-108.8,-108.8,-138.8]) if return_dicom_properties = True
+    returned values: numpy.array, [2.4, 2.4, 2.4], [220, 220, 280]
+      if return_dicom_properties = False
+    returned values: numpy.array, ([220, 220, 280], [2.4, 2.4, 2.4], [-108.8,-108.8,-138.8])
+      if return_dicom_properties = True
   """
   load_order = 'F'
   if las_convention:
@@ -132,7 +143,8 @@ def load_image_and_metadata(
 
   dicom_origin = get_dicom_origin(matrix_size, voxel_size, img_center=None)
   dicom_properties_object = gt.dicom_properties()
-  dicom_properties_object.spacing = voxel_size  # only if gap = 0; probably don't work propely in MRI \
+  # only if gap = 0; probably don't work propely in MRI
+  dicom_properties_object.spacing = voxel_size
   dicom_properties_object.origin = dicom_origin
   dicom_properties_object.image_shape = matrix_size
 
@@ -144,11 +156,11 @@ def get_dicom_origin(vector_size, vector_voxel_size, img_center=None):
   Args:
         vector_size (np.array): 3-elements vector;size of image in voxels
         vector_voxel_size (np.array): 3-elements vector; size of voxels in mm
-        center(np.array | list | tuple): 3-elements vector; center of the lab coordinate system in voxels,
-                                         default value is the image centre
+        center(np.array | list | tuple): 3-elements vector; center of the lab coordinate system in
+                                         voxels, default value is the image centre
   Returns:
-        numpy.array (lu_voxel-center) : 3-elements vector; position in mm of the first voxel center [0,0,0]
-                                        in the lab coordinate system.
+        numpy.array (lu_voxel-center) : 3-elements vector; position in mm of the first voxel center
+                                        [0,0,0] in the lab coordinate system.
 
   Examples:
     returned values: [-30.0,-15.5,20.2]
@@ -184,9 +196,9 @@ def transform_interfile_header(input_header, output_header, transform_list):
     for line in input_header_lines:
       splitted = line.split(' := ')
       splitted[0] = " ".join(splitted[0].split())
-      for tr in transform_list:
-        if tr[0] in splitted[0]:
-          output_file.write(f'{tr[0]} := {tr[1]}' + os.linesep)
+      for transform in transform_list:
+        if transform[0] in splitted[0]:
+          output_file.write(f'{transform[0]} := {transform[1]}' + os.linesep)
           break
       else:
         output_file.write(line)

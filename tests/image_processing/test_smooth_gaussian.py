@@ -1,53 +1,49 @@
-""" Unit tests for smooth_gaussian
 """
-import unittest
+Unit tests for smooth_gaussian.
+"""
+
+from pathlib import Path
 import os
-import sys
+
+import pytest
+
 from tests.helper_tools import download_file
 from pet_imaging_tools.image_processing.smooth_gaussian import smooth_gaussian
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# pylint: disable=protected-access, missing-docstring, invalid-name, line-too-long
-
-
-class Test_smooth_gaussian(unittest.TestCase):
-
-  def setUp(self):
-    self.thisDir = os.path.dirname(os.path.abspath(__file__))
-    self.input_header_file = self.thisDir + '/recon_true_230ps_it1.hdr'
-    self.input_image_file = self.thisDir + '/recon_true_230ps_it1.img'
-    self.output_header_file = self.thisDir + '/recon_true_230ps_it1_smooth.hdr'
-    self.output_image_file = self.thisDir + '/recon_true_230ps_it1_smooth.img'
-
-    if not os.path.exists(self.input_image_file):
-      download_file('recon_true_230ps_it1.img', self.thisDir + '/')
-
-    if not os.path.exists(self.input_header_file):
-      download_file('recon_true_230ps_it1.hdr', self.thisDir + '/')
-
-    try:
-      os.remove(self.output_header_file)
-      os.remove(self.output_image_file)
-    except OSError:
-      pass
-
-  def tearDown(self):
-    try:
-      os.remove(self.output_header_file)
-      os.remove(self.output_image_file)
-    except OSError:
-      pass
-
-  def test_success(self):
-    in_header = os.path.join(self.thisDir, self.input_header_file)
-    smooth_gaussian(in_header, "3.5")
-    self.assertTrue(os.path.exists(self.output_image_file))
-    self.assertTrue(os.path.exists(self.output_header_file))
+@pytest.fixture(name='test_data')
+def test_data_fixture():
+  """
+  Path to a directory used for temporary cached test files.
+  """
+  test_data = 'test_data'
+  os.makedirs(test_data, exist_ok=True)
+  return Path(test_data)
 
 
-if __name__ == '__main__':
-  suite = unittest.defaultTestLoader.loadTestsFromTestCase(
-      Test_smooth_gaussian
-  )
-  testResult = unittest.TextTestRunner(verbosity=2).run(suite)
+def test_smooth_gaussian(test_data):
+  """
+  Test function smooth_gaussian.
+  """
+
+  input_header_file = test_data / 'recon_true_230ps_it1.hdr'
+  input_image_file = test_data / 'recon_true_230ps_it1.img'
+  output_header_file = test_data / 'recon_true_230ps_it1_smooth.hdr'
+  output_image_file = test_data / 'recon_true_230ps_it1_smooth.img'
+
+  if not os.path.exists(input_image_file):
+    download_file('recon_true_230ps_it1.img', str(test_data))
+
+  if not os.path.exists(input_header_file):
+    download_file('recon_true_230ps_it1.hdr', str(test_data))
+
+  try:
+    os.remove(output_header_file)
+    os.remove(output_image_file)
+  except OSError:
+    pass
+
+  smooth_gaussian(str(input_header_file), "3.5")
+
+  assert os.path.exists(output_image_file)
+  assert os.path.exists(output_header_file)

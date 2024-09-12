@@ -28,26 +28,26 @@ def function_to_image(output, fn_name):
   image_dimensions_vx = [
       int(dim / size) for dim, size in zip(IMAGE_DIMENSION_MM, VOXEL_SIZE)
   ]
-  logging.info(f"Image dimensions: {image_dimensions_vx} (voxels)")
+  logging.info("Image dimensions: %s (voxels)", image_dimensions_vx)
 
   center_image_vx = [dim // 2 for dim in image_dimensions_vx]
-  logging.info(f"Center of the image: {center_image_vx} (voxels)")
+  logging.info("Center of the image: %s (voxels)", center_image_vx)
 
   ijk_to_xyz = lambda *ijk: [
       (i - c) * v + v / 2 for i, c, v in zip(ijk, center_image_vx, VOXEL_SIZE)
   ]
-  fn = lambda *ijk: FUNCTIONS[fn_name](*ijk_to_xyz(*ijk))
+  fun = lambda *ijk: FUNCTIONS[fn_name](*ijk_to_xyz(*ijk))
   img_np = np.array(
       [
           [
-              [fn(i, j, k)
+              [fun(i, j, k)
                for k in range(image_dimensions_vx[2])]
               for j in range(image_dimensions_vx[1])
           ]
           for i in tqdm(range(image_dimensions_vx[1]))
       ]
   )
-  logging.info(f"Computed matrix: {img_np}")
+  logging.info("Computed matrix: %s", img_np)
 
   header_path = output + ".hdr"
   raw_path = output + ".raw"
@@ -58,27 +58,38 @@ def function_to_image(output, fn_name):
 
 
 def write_header(header_path, raw_name, img_np):
-  with open(header_path, 'w', encoding='utf-8') as f:
-    f.write(f'!name of data file := {raw_name}\n')
-    f.write('!total number of images := 1\n')
-    f.write('imagedata byte order := LITTLEENDIAN\n')
-    f.write('number of dimensions := 3\n')
-    f.write(f'!matrix size [1] := {img_np.shape[0]}\n')
-    f.write(f'!matrix size [2] := {img_np.shape[1]}\n')
-    f.write(f'!matrix size [3] := {img_np.shape[2]}\n')
-    f.write('!number format := float\n')
-    f.write('!number of bytes per pixel := 4\n')
-    f.write(f'scaling factor (mm/pixel) [1] := {VOXEL_SIZE[0]}\n')
-    f.write(f'scaling factor (mm/pixel) [2] := {VOXEL_SIZE[1]}\n')
-    f.write(f'scaling factor (mm/pixel) [3] := {VOXEL_SIZE[2]}\n')
-    f.write('image duration (sec) := 1\n')
+  """
+  Write header file of the function converted to an image.
+  """
+  with open(header_path, 'w', encoding='utf-8') as file:
+    file.write(
+        f'''!name of data file := {raw_name}
+file.write('!total number of images := 1
+file.write('imagedata byte order := LITTLEENDIAN
+file.write('number of dimensions := 3
+file.write(f'!matrix size [1] := {img_np.shape[0]}
+file.write(f'!matrix size [2] := {img_np.shape[1]}
+file.write(f'!matrix size [3] := {img_np.shape[2]}
+file.write('!number format := float
+file.write('!number of bytes per pixel := 4
+file.write(f'scaling factor (mm/pixel) [1] := {VOXEL_SIZE[0]}
+file.write(f'scaling factor (mm/pixel) [2] := {VOXEL_SIZE[1]}
+file.write(f'scaling factor (mm/pixel) [3] := {VOXEL_SIZE[2]}
+file.write('image duration (sec) := 1'''
+    )
 
 
 def write_raw(raw_path, img_np):
+  """
+  Write raw data from a numpy array to a binary file.
+  """
   img_np.flatten('F').astype('float32').tofile(raw_path)
 
 
 def parse_args():
+  """
+  Parse arguments for function_to_image.
+  """
   parser = argparse.ArgumentParser()
   parser.add_argument('--output', '-o', help="output prefix", required=True)
   parser.add_argument(

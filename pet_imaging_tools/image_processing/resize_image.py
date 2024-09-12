@@ -1,8 +1,11 @@
 """Resize an Interfile image by cropping and padding.
 
-This script resizes an Interfile image so that another region of the space is covered. It DOES NOT modify, stretch or interpolate any data in any way; instead, it just crops the image where needed and pad it with empty values (0) where needed.
+This script resizes an Interfile image so that another region of the space is covered.
+It DOES NOT modify, stretch or interpolate any data in any way; instead, it just crops the image
+where needed and pad it with empty values (0) where needed.
 
-In some use cases, it can be useful to also flip the data, which can be achieved using the --x-flip, --y-flip and --z-flip flags. Flipping is done after resizing was performed.
+In some use cases, it can be useful to also flip the data, which can be achieved using the
+--x-flip, --y-flip and --z-flip flags. Flipping is done after resizing was performed.
 
 Everything is expressed in voxels and not in millimeters.
 
@@ -16,56 +19,80 @@ Although the script operates in 3D, here is an example in 2D:
   |IMAGE|
   +-----+
 
-  In this example, OLD IMAGE is a 7×5 image, and we want it to cover the region covered by NEW IMAGE (17×4), which is shifted from OLD IMAGE by 2 pixels in the x direction and 1 pixel in the y direction.
+  In this example, OLD IMAGE is a 7×5 image, and we want it to cover the region covered by NEW
+  IMAGE (17×4), which is shifted from OLD IMAGE by 2 pixels in the x direction and 1 pixel in the y
+  direction.
   This can be achieved by running the following (pseudo-)command:
 
-    python -m image_tools.resize_image -i OLD_IMAGE.hdr -o NEW_IMAGE --x-size 17 --y-size 4 --x-shift 2 --y-shift 1
+    python -m image_tools.resize_image \
+      -i OLD_IMAGE.hdr \
+      -o NEW_IMAGE \
+      --x-size 17 \
+      --y-size 4 \
+      --x-shift 2 \
+      --y-shift 1
 
   The following will happen:
     - Pixel data within OLD IMAGE and outside of NEW IMAGE will be discarded (cropping);
     - Pixel data within NEW IMAGE and outside of OLD IMAGE will be set to 0 (padding);
-    - Pixel data located at the intersection between OLD IMAGE and NEW IMAGE will be copied to NEW IMAGE and properly placed in the matrix.
+    - Pixel data located at the intersection between OLD IMAGE and NEW IMAGE will be copied to NEW
+      IMAGE and properly placed in the matrix.
 
-  If OLD IMAGE and NEW IMAGE happen to be disjoint, then NEW IMAGE would be completely filled with zeroes.
+  If OLD IMAGE and NEW IMAGE happen to be disjoint, then NEW IMAGE would be completely filled with
+  zeroes.
 """
 
 import argparse
 import logging
 
 import numpy as np
-from image_tools.image_tools import get_info_from_interfile_header, transform_interfile_header
+from pet_imaging_tools.image_processing.image_tools import (
+    get_info_from_interfile_header, transform_interfile_header
+)
 
 
 def get_output_matrix_size(input_matrix_size, desired_size):
+  """
+  Get the size of the output matrix, based on the desired size and the size of the input matrix.
+  """
   output_matrix_size = tuple(
       input_matrix_size[i] if desired_size[i] is None else desired_size[i]
       for i in range(3)
   )
-  logging.debug(f"Output matrix size: {output_matrix_size}")
+  logging.debug("Output matrix size: %s", output_matrix_size)
   return output_matrix_size
 
 
 def get_shifts(input_shifts):
+  """
+  Get the shifts, with a default value of 0 if no shift was provided in a dimension.
+  """
   shifts = tuple(
       0 if input_shifts[i] is None else input_shifts[i] for i in range(3)
   )
-  logging.debug(f"Shifts to be used: {shifts}")
+  logging.debug("Shifts to be used: %s", shifts)
   return shifts
 
 
 def get_slices(shift, input_axis_size, output_axis_size):
+  """
+  Compute the array slices necessary to determine which data to copy from the input matrix to the
+  output one.
+  """
   border_input_low, border_input_high = -(
       input_axis_size // 2
   ), input_axis_size // 2 + input_axis_size % 2
   border_output_low, border_output_high = shift - (
       output_axis_size // 2
   ), shift + output_axis_size // 2 + output_axis_size % 2
-  logging.debug(f"Shift: {shift}")
+  logging.debug("Shift: %s", shift)
   logging.debug(
-      f"Input size: {input_axis_size}, borders: {border_input_low, border_input_high}"
+      "Input size: %s, borders: %s", input_axis_size,
+      (border_input_low, border_input_high)
   )
   logging.debug(
-      f"Output size: {output_axis_size}, borders: {border_output_low, border_output_high}"
+      "Output size: %s, borders: %s", output_axis_size,
+      (border_output_low, border_output_high)
   )
 
   if border_input_low > border_output_high or border_input_high < border_output_low:
@@ -96,13 +123,17 @@ def get_slices(shift, input_axis_size, output_axis_size):
 
 
 def resize_image(input_image_np, output_matrix_size, shifts):
+  """
+  Resize the input image by copying the overlap region with the output image. No interpolation is
+  performed, data is truncated where needed, and padded with zeroes where needed.
+  """
 
   slices_input = [slice(None, None, None) for _ in range(3)]
   slices_output = [slice(None, None, None) for _ in range(3)]
 
   for axis in range(3):
 
-    logging.debug(f"Processing axis {axis}")
+    logging.debug("Processing axis %s", axis)
 
     shift = shifts[axis]
     input_axis_size = input_image_np.shape[axis]
@@ -112,8 +143,8 @@ def resize_image(input_image_np, output_matrix_size, shifts):
         shift, input_axis_size, output_axis_size
     )
 
-    logging.debug(f"Slice input: {slice_input}")
-    logging.debug(f"Slice output: {slice_output}")
+    logging.debug("Slice input: %s", slice_input)
+    logging.debug("Slice output: %s", slice_output)
 
     slices_input[axis] = slice_input
     slices_output[axis] = slice_output
@@ -125,11 +156,17 @@ def resize_image(input_image_np, output_matrix_size, shifts):
 
 
 def flip_image(image_np, flips):
+  """
+  Flip the image in the determined axes.
+  """
   flip_axis = tuple(i for i in range(len(flips)) if flips[i])
   return np.flip(image_np, flip_axis)
 
 
 def save_output_header(input_header, output, output_matrix_size):
+  """
+  Generate the header of the output image.
+  """
   output_header = output + '.hdr'
   transform_list = [
       ('!name of data file', output + '.img'),
@@ -141,10 +178,16 @@ def save_output_header(input_header, output, output_matrix_size):
 
 
 def save_output_image(output_image_np, output, dtype):
+  """
+  Save the binary data of the output image.
+  """
   output_image_np.flatten('F').astype(dtype).tofile(output + '.img')
 
 
-def main():
+def parse_args():
+  """
+  Parse arguments to resize image.
+  """
   parser = argparse.ArgumentParser(
       description="resize an image by cropping and padding"
   )
@@ -176,7 +219,15 @@ def main():
   parser.add_argument(
       '--debug', help="debug mode", default=False, action='store_true'
   )
-  args = parser.parse_args()
+  return parser.parse_args()
+
+
+def main():
+  """
+  Parse input arguments and resize images.
+  """
+
+  args = parse_args()
 
   logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO)
 
@@ -187,7 +238,7 @@ def main():
   input_image, _, input_matrix_size, dtype = get_info_from_interfile_header(
       args.input_header
   )
-  logging.debug(f"Input header has size {input_matrix_size}, dtype {dtype}")
+  logging.debug("Input header has size %s, dtype %s", input_matrix_size, dtype)
 
   output_matrix_size = get_output_matrix_size(input_matrix_size, input_sizes)
   shifts = get_shifts(input_shifts)

@@ -12,8 +12,8 @@ def get_cosines(R, L, rho, z):  # pylint: disable=invalid-name
   """
   R1 = R - rho  # pylint: disable=invalid-name
   R2 = R + rho  # pylint: disable=invalid-name
-  l1 = L / 2. - z
-  l2 = L / 2. + z
+  l1 = L / 2. - z  # pylint: disable=invalid-name
+  l2 = L / 2. + z  # pylint: disable=invalid-name
   denom1 = np.sqrt(l1 * l1 + R1 * R1)
   denom2 = np.sqrt(l1 * l1 + R2 * R2)
   denom3 = np.sqrt(l2 * l2 + R1 * R1)
@@ -67,7 +67,7 @@ def fov_factory(R, L, sensitFunction=fov):  # pylint: disable=invalid-name
   sensitivity(5, 10); // geometrical acceptance  for the point  rho = 5 and z = 10
   """
 
-  def _fov(rho, z):
+  def _fov(rho, z):  # pylint: disable=invalid-name
     if rho >= R:
       return 0
     if np.abs(z) >= L / 2.:
@@ -78,6 +78,9 @@ def fov_factory(R, L, sensitFunction=fov):  # pylint: disable=invalid-name
 
 
 def fov_sensitivity(R, L):  # pylint: disable=invalid-name
+  """
+  Analytical sensitivity for a scanner with a given radius and length.
+  """
   sens = fov_factory(R, L)
 
   def _fov_sensitivity(x, y, z):

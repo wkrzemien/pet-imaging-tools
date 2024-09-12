@@ -21,6 +21,9 @@ logger = logging.getLogger(__name__)
 
 
 def get_gauss_filter(filter_size):
+  """
+  Get the size of the gauss filter in all three dimensions.
+  """
   if not ',' in filter_size:
     gauss_filter_mm = np.full(3, float(filter_size))
 
@@ -38,11 +41,18 @@ def get_gauss_filter(filter_size):
 def smooth_and_save_image(
     img_header, vol_name, matrix_size, data_type, gauss_filter_voxels
 ):
+  """
+  Smooth the original image, then save the smoothed image to a new file.
+  """
 
   sep = img_header.split('/')[-1]
-  p = os.path.join(img_header.split(sep)[0], vol_name)
+  filename = os.path.join(img_header.split(sep)[0], vol_name)
 
-  image = np.fromfile(p, dtype=data_type).reshape(matrix_size, order='F')
+  image = np.fromfile(
+      filename, dtype=data_type
+  ).reshape(
+      matrix_size, order='F'
+  )
 
   logger.debug("Smoothing original image")
   img = gaussian_filter(image, sigma=gauss_filter_voxels)
@@ -52,12 +62,15 @@ def smooth_and_save_image(
 
 
 def save_new_header(old_img_header, vol_name):
+  """
+  Write the new header to disk.
+  """
 
   new_image_header = old_img_header.split('.')[0] + '_smooth.hdr'
   shutil.copyfile(old_img_header, new_image_header)
 
-  fh, abs_path = mkstemp()
-  with os.fdopen(fh, 'w') as new_file:
+  file_descriptor, abs_path = mkstemp()
+  with os.fdopen(file_descriptor, 'w') as new_file:
     with open(old_img_header, encoding="utf-8") as old_file:
       lines = old_file.readlines()
       for line in lines:
@@ -76,6 +89,10 @@ def save_new_header(old_img_header, vol_name):
 
 
 def smooth_gaussian(old_img_header, filter_size):
+  """
+  Smooth an image with a Gaussian filter of given size.
+  The filter can be of different size in all three dimensions.
+  """
 
   logger.debug("Get image properties from original interfile")
   old_img_file, vox_size, matrix_size, dtype = get_info_from_interfile_header(
@@ -85,8 +102,8 @@ def smooth_gaussian(old_img_header, filter_size):
   gauss_filter_mm = get_gauss_filter(filter_size)
   gauss_filter_voxels = gauss_filter_mm / vox_size
 
-  logger.debug(f"  Gaussian filter given in mm: {gauss_filter_mm}")
-  logger.debug(f"  Gaussian filter given in voxels: {gauss_filter_voxels}")
+  logger.debug("  Gaussian filter given in mm: %s", gauss_filter_mm)
+  logger.debug("  Gaussian filter given in voxels: %s", gauss_filter_voxels)
 
   logger.debug(old_img_header)
   logger.debug(old_img_file)
@@ -99,6 +116,9 @@ def smooth_gaussian(old_img_header, filter_size):
 
 
 def main():
+  """
+  Parse arguments then run image smoothing.
+  """
   parser = argparse.ArgumentParser(
       description='Simple script to smooth the image with Gaussian smoothing'
   )

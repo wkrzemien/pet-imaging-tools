@@ -16,8 +16,8 @@ The focus is put on ease of installation and ease of use for research purposes, 
 --
 This work was partially funded by EuroHPC PL Project, Smart Growth Operational Programme 4.2
 
-## Install 
+## Install
 
-pip install git+ssh://git@github.com/JPETTomography/pet-imaging-tools@develop
-pip install git+https://github.com/JPETTomography/pet-imaging-tools@develop
-
+```
+pip install git+ssh://git@github.com/JPETTomography/pet-imaging-tools
+```

@@ -1,2 +1,4 @@
 tdqm
 numpy
+scipy
+gatetools
