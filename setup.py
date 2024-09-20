@@ -9,7 +9,9 @@ setup(
     author='Aurélien Coussat et al.',
     license_files=('LICENSE', ),
     packages=find_packages(),
-    install_requires=['dask[dataframe]', 'numpy', 'pandas', 'tqdm', 'StrEnum'],
+    install_requires=[
+        'dask[dataframe]', 'numpy', 'pandas', 'tqdm', 'StrEnum', 'gatetools'
+    ],
     scripts=[
         'pet_imaging_tools/castor_datafile/add_normalization_factors.py',
         'pet_imaging_tools/castor_datafile/replicate.py',

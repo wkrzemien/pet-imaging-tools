@@ -161,4 +161,4 @@ cython_debug/
 #.idea/
 
 # Test data
-tests/*/test_data
+test_data
