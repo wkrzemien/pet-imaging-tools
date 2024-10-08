@@ -19,5 +19,5 @@ This work was partially funded by EuroHPC PL Project, Smart Growth Operational P
 ## Install
 
 ```
-pip install git+ssh://git@github.com/JPETTomography/pet-imaging-tools
+pip install git+ssh://git@github.com/wkrzemien/pet-imaging-tools
 ```
