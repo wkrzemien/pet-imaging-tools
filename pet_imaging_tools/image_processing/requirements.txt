@@ -1,0 +1,4 @@
+tdqm
+numpy
+scipy
+gatetools

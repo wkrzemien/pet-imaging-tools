@@ -1,0 +1,5 @@
+dask[dataframe]
+numpy
+pandas
+tqdm
+StrEnum
