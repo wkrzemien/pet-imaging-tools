@@ -5,7 +5,7 @@ setup(
     name='pet-imaging-tools',
     version='0.0.1',
     description='Collection of useful tools and scripts for PET imaging',
-    url='https://github.com/JPETTomography/pet-imaging-tools',
+    url='https://github.com/wkrzemien/pet-imaging-tools',
     author='Aurélien Coussat et al.',
     license_files=('LICENSE', ),
     packages=find_packages(),
