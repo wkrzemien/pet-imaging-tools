@@ -21,3 +21,4 @@ This work was partially funded by EuroHPC PL Project, Smart Growth Operational P
 ```
 pip install git+ssh://git@github.com/wkrzemien/pet-imaging-tools
 ```
+
