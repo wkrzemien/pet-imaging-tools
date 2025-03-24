@@ -9,7 +9,7 @@ on:
 jobs:
 
   Check-format:
-    runs-on: self-hosted
+    runs-on: ubuntu-22.04
     steps:
 
     - uses: actions/checkout@v2
@@ -30,7 +30,7 @@ jobs:
         make lint
 
   Run-tests:
-    runs-on: self-hosted
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         python-version: ['3.7', '3.8']
